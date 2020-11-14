@@ -44,66 +44,94 @@ class Vampire {
   /** Tree traversal methods **/
 
   // Returns the vampire object with that name, or null if no vampire exists with that name
+
   vampireWithName(name) {
-    
-  }
+
+    if(name === 'root') {
+      return this;
+    };
+
+    for (const offspring of this.offspring) {
+      if (name === offspring.name) {
+        return offspring;
+
+      } else {
+        for (const offspring1 of offspring.offspring) {
+          if (name === offspring1.name) {
+            return offspring1;
+            
+          } else {
+            for (const offspring2 of offspring1.offspring) {
+              if (name === offspring2.name) {
+                return offspring2;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return null;
+  };
+
+  //a try at recursion that did not go well
+  // vampireWithName(name) {
+  //   let resultArray = [];
+  //   if(name === 'root') {
+  //     console.log('returning 1 :', this.name);
+  //     return this;
+  //   };
+  //   for (const offspring of this.offspring) {
+  //     if(name === offspring.name) {
+  //       console.log('returning 2 :', offspring.name);
+  //       resultArray.push(offspring);
+  //     } else {
+  //       resultArray.concat(offspring.vampireWithName(name));
+  //     }
+  //   }
+  // if (resultArray.length > 0) {
+  //   console.log(' resultArray:', resultArray);
+  //   return resultArray[0];
+  // }
+  //   console.log(' resultArray:', resultArray);
+  //   return resultArray;
+  // }
 
   // Returns the total number of vampires that exist
   get totalDescendents() {
-    
+    let totalVampires = 0;
+
+    for (const offspring of this.offspring) {
+      if(this.offspring.length >= 0) {
+        totalVampires += 1 + offspring.totalDescendents;
+      }
+    }
+  
+    return totalVampires;
   }
 
   // Returns an array of all the vampires that were converted after 1980
   get allMillennialVampires() {
-    
-  }
+    let result = [];
 
-  /** Stretch **/
-
-  // Returns the closest common ancestor of two vampires.
-  // The closest common anscestor should be the more senior vampire if a direct ancestor is used.
-  // For example:
-  // * when comparing Ansel and Sarah, Ansel is the closest common anscestor.
-  // * when comparing Ansel and Andrew, Ansel is the closest common anscestor.
-  closestCommonAncestor(vampire) {
-    const thisNumberOfAncestors = this.numberOfVampiresFromOriginal;
-    const vampireNumberOfAncestors = vampire.numberOfVampiresFromOriginal;
-
-    // console.log('this ancestors :', );
-    // console.log('vampire ancestors :', );
-
-    //if comparing to root
-    if (!this.creator) {
-      return this;
+    //if the current vampire's year is > 1980 add them to result
+    if (this.yearConverted > 1980) {
+      result.push(this);
     }
 
-    if (!vampire.creator) {
-      return vampire;
+    //loop through offspring
+    for (const offspring of this.offspring) {
+
+      //call the method on all offspring recursively
+      const millenialVampires = offspring.allMillennialVampires;
+
+      //combine results
+      result = result.concat(millenialVampires);
     }
 
-    //if same creator
-    if (this.creator.name === vampire.creator.name) {
-      return this.creator;
-    }
-
-    //if different number of ancestors
-    if (Math.abs(thisNumberOfAncestors - vampireNumberOfAncestors))
-
-    console.log('this:')
-    console.log('name:', this.name);
-    console.log('offspring', this.offspring);
-    console.log('creator', this.creator.name);
-    console.log('thisNumberOfAncestors :', thisNumberOfAncestors);
-    console.log('---')
-    console.log('vampire')
-    console.log('name:', vampire.name);
-    console.log('offspring', vampire.offspring);
-    console.log('creator', vampire.creator.name);;
-    console.log('vampireNumberOfAncestors :', vampireNumberOfAncestors);
+    return result;
   }
 }
 
-//90 min
 
 module.exports = Vampire;
-
