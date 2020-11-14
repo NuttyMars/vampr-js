@@ -86,5 +86,7 @@ class Vampire {
   }
 }
 
+//90 min
+
 module.exports = Vampire;
 
